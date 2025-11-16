@@ -1,6 +1,6 @@
 %%Sabina Baken MATH519 Project
 clear; close all; clc;
-%%Ordinary model and its stability
+%%Ordinary model and it's stability
 syms x y real
 a_val=1;
 b_val=1;
