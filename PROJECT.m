@@ -37,13 +37,35 @@ if all(real(lambda) < 0)
 elseif all(real(lambda) > 0)
     disp('Equilibrium is unstable.');
 elseif any(real(lambda) < 0) && any(real(lambda) > 0)
-    disp('Equilibrium is a unstable saddle point.');
+    disp('Equilibrium is an unstable saddle point.');
 elseif all(real(lambda) == 0)
     disp('Equilibrium is a center (might need another method).');
 else
     disp('Mixed or degenerate case (might need another method).');
 end
 end
+
+tspan = [0 10];
+initial_cond = [10, 10];
+f = @(t, X) [a*X(1)*(1-X(1)/k_prey) - b*X(1)*X(2);
+              c*X(1)*X(2) - d*X(2)];
+[t, sol] = ode45(f, tspan, initial_cond);
+
+
+figure;
+plot(sol(:,1), sol(:,2), 'b', 'LineWidth', 2);
+xlabel('Prey (x)');
+ylabel('Predator (y)');
+title('Phase Portrait');
+grid on;
+
+figure;
+plot(t, sol(:,1), 'b', t, sol(:,2), 'r', 'LineWidth', 2);
+xlabel('Time');
+ylabel('Population');
+legend('Prey', 'Predator');
+title('Population vs Time');
+grid on;
 
 
 
