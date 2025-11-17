@@ -27,6 +27,23 @@ disp(J_origin);
 num_eq = length(x_eq);
 for k = 2:num_eq
 J_nontr = subs(J, [x,y],[x_eq(k),y_eq(k)]);
-disp('Jacobian matrix at nontrivial equilibrium');
-disp(J_nontr);
+fprintf('Jacobian matrix at nontrivial equilibrium (x, y) = (%.2f, %.2f):\n', ...
+        double(x_eq(k)), double(y_eq(k)));
+lambda = eig(J_nontr);
+disp('Eigenvalues at this equilibrium:');
+disp(lambda);
+if all(real(lambda) < 0)
+    disp('Equilibrium is stable.');
+elseif all(real(lambda) > 0)
+    disp('Equilibrium is unstable.');
+elseif any(real(lambda) < 0) && any(real(lambda) > 0)
+    disp('Equilibrium is a unstable saddle point.');
+elseif all(real(lambda) == 0)
+    disp('Equilibrium is a center (might need another method).');
+else
+    disp('Mixed or degenerate case (might need another method).');
 end
+end
+
+
+
