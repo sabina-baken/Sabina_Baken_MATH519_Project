@@ -10,7 +10,7 @@ a = a_val;
 b = b_val;
 c = c_val;
 d = d_val;
-k_prey = 10;
+k_prey = 100;
 prey = a*x*(1-x/k_prey)-b*x*y;
 predator = c*x*y-d*y;
 M = [prey;predator];
@@ -23,6 +23,20 @@ disp([x_eq,y_eq]);
 J_origin = subs(J, [x,y],[x_eq(1),y_eq(1)]);
 disp('Jacobian matrix at origin is:');
 disp(J_origin);
+lambda_origin = eig(J_origin);
+disp('Eigenvalues at origin equilibrium:');
+disp(lambda_origin);
+if all(real(lambda_origin) < 0)
+    disp('Equilibrium is stable.');
+elseif all(real(lambda_origin) > 0)
+    disp('Equilibrium is unstable.');
+elseif any(real(lambda_origin) < 0) && any(real(lambda_origin) > 0)
+    disp('Equilibrium is an unstable saddle point.');
+elseif all(real(lambda_origin) == 0)
+    disp('Equilibrium is a center (might need another method).');
+else
+    disp('Mixed or degenerate case (might need another method).');
+end
 
 num_eq = length(x_eq);
 for k = 2:num_eq
@@ -57,6 +71,24 @@ plot(sol(:,1), sol(:,2), 'b', 'LineWidth', 2);
 xlabel('Prey (x)');
 ylabel('Predator (y)');
 title('Phase Portrait');
+grid on;
+
+
+[x_q, y_q] = meshgrid(0:1:20, 0:1:20);
+u = a*x_q.*(1 - x_q./k_prey) - b.*x_q.*y_q; 
+v = c.*x_q.*y_q - d.*y_q;                  
+figure;
+hold on;
+quiver(x_q, y_q, u, v, 'Color', [0.5 0.5 0.5], 'AutoScaleFactor', 2);
+plot(sol(:,1), sol(:,2), 'b', 'LineWidth', 2);
+idx = 1:round(length(sol)/20):length(sol)-1;
+quiver(sol(idx,1), sol(idx,2), ...
+       sol(idx+1,1)-sol(idx,1), sol(idx+1,2)-sol(idx,2), ...
+       0, 'Color', 'b', 'MaxHeadSize', 80);
+xlabel('Prey (x)');
+ylabel('Predator (y)');
+title('Phase Portrait with Direction Field');
+axis tight;
 grid on;
 
 figure;
