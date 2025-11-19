@@ -2,10 +2,10 @@
 clear; close all; clc;
 %%Predator-prey model with logistic growth function for prey and it's stability
 syms x y real
-a_val=5;
-b_val=2;
-c_val=3;
-d_val=5;
+a_val=1;
+b_val=0.02;
+c_val=0.01;
+d_val=0.2;
 a = a_val;
 b = b_val;
 c = c_val;
@@ -58,8 +58,8 @@ else
 end
 end
 
-tspan = [0 10];
-initial_cond = [10, 10];
+tspan = [0 50];
+initial_cond = [10, 5];
 f = @(t, X) [a*X(1)*(1-X(1)/k_prey) - b*X(1)*X(2);
               c*X(1)*X(2) - d*X(2)];
 [t, sol] = ode45(f, tspan, initial_cond);
@@ -73,12 +73,12 @@ title('Phase Portrait');
 grid on;
 
 
-[x_q, y_q] = meshgrid(0:1:20, 0:1:20);
+[x_q, y_q] = meshgrid(0:10:k_prey, 0:10:k_prey);
 u = a*x_q.*(1 - x_q./k_prey) - b.*x_q.*y_q; 
 v = c.*x_q.*y_q - d.*y_q;                  
 figure;
 hold on;
-quiver(x_q, y_q, u, v, 'Color', [0.5 0.5 0.5], 'AutoScaleFactor', 2);
+quiver(x_q, y_q, u, v, 'Color', [0.5 0.5 0.5], 'AutoScale', 'on','AutoScaleFactor', 2);
 plot(sol(:,1), sol(:,2), 'b', 'LineWidth', 2);
 idx = 1:round(length(sol)/20):length(sol)-1;
 quiver(sol(idx,1), sol(idx,2), ...

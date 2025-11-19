@@ -2,16 +2,16 @@
 clear; close all; clc;
 %%Mutualism model and it's stability
 syms x y real
-r_1_val=5;
-r_2_val=2;
+r_1_val=0.4;
+r_2_val=0.3;
 r_1 = r_1_val;
 r_2 = r_2_val;
-a_12 = 0.5;
+a_12 = 0.3;
 a_21 = 0.4;
-k_mut1 = 100;
-k_mut2 = 100;
-f1 = r_1*x*(1-(x-a_12*y)/k_mut1);
-f2 = r_2*y*(1-(y-a_21*y)/k_mut2);
+K1 = 100;
+K2 = 80;
+f1 = r_1*x*(1-(x-a_12*y)/K1);
+f2 = r_2*y*(1-(y-a_21*x)/K2);
 J = jacobian([f1;f2], [x,y]);
 disp('Jacobian matrix is:');
 disp(J);
@@ -58,9 +58,9 @@ end
 end
 
 tspan = [0 50];
-initial_cond = [50, 50];
-f = @(t, X) [r_1*X(1)*(1-(X(1)-a_12*X(2))/k_mut1);
-             r_2*X(2)*(1-(X(2)-a_21*X(1))/k_mut2);];
+initial_cond = [10, 5];
+f = @(t, X) [r_1*X(1)*(1-(X(1)-a_12*X(2))/K1);
+             r_2*X(2)*(1-(X(2)-a_21*X(1))/K2);];
 [t, sol] = ode45(f, tspan, initial_cond);
 
 figure;
@@ -71,12 +71,12 @@ title('Phase Portrait');
 grid on;
 
 
-[x_q, y_q] = meshgrid(0:1:110, 0:1:110);
-u = r_1.*x_q.*(1-(x_q-a_12.*y_q)/k_mut1);
-v = r_2.*y_q.*(1-(y_q-a_21.*y_q)/k_mut2);              
+[x_q, y_q] = meshgrid(0:10:2*K1, 0:10:2*K2);
+u = r_1.*x_q.*(1-(x_q-a_12.*y_q)/K1);
+v = r_2.*y_q.*(1-(y_q-a_21.*x_q)/K2);              
 figure;
 hold on;
-quiver(x_q, y_q, u, v, 'Color', [0.5 0.5 0.5], 'AutoScaleFactor', 2);
+quiver(x_q, y_q, u, v, 'Color', [0.5 0.5 0.5], 'AutoScale', 'on','AutoScaleFactor', 2);
 plot(sol(:,1), sol(:,2), 'b', 'LineWidth', 2);
 idx = 1:round(length(sol)/20):length(sol)-1;
 quiver(sol(idx,1), sol(idx,2), ...
